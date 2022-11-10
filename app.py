@@ -9,7 +9,7 @@ from my_videostream import VideoStream
 from my_plate_recognition import PlateRecognition
 from my_util import save, get_current_gps
 from datetime import datetime
-
+import json
 
 
 app=Flask(__name__)
@@ -38,6 +38,7 @@ PATH_TO_LABELS = os.path.join(CWD_PATH,MODEL_NAME,LABELMAP_NAME)
 with open(PATH_TO_LABELS, 'r') as f:
     labels = [line.strip() for line in f.readlines()]
 
+LOST_VEHICLE_LIST = os.path.join(CWD_PATH, 'saved', 'data.json')
 
 
 # Initialize video stream
@@ -129,13 +130,27 @@ def gen_frames():
                 plate_number = plateRecognition.recognize(cropped_image)
                 label = label.replace('{{plate_number}}', plate_number)
 
-                if plate_number != '':
-                    save(cropped_image, fileName=f'{plate_number}-{datetime.timestamp(datetime.now())}.jpg')
-                
-                
-                # label += text
-                
                 cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
+                
+
+                # loop all lost vehicles
+                
+                with open(LOST_VEHICLE_LIST, 'r') as f:
+                    try:
+                        lost_vehicle_list = json.loads(f.read())["items"]
+                        for lv in lost_vehicle_list:
+                            lv_plate_number = lv["plateNumber"]
+                            lv_plate_number = lv_plate_number.replace("-", "")
+                            lv_plate_number = lv_plate_number.replace(".", "")
+                            
+                            if lv_plate_number == plate_number:
+                                print("detected")
+                                save(frame, fileName=f'{plate_number}.jpg')
+                    except Exception as e:
+                        print(e)
+                    
+                
+                
 
         # Draw framerate in corner of frame
         cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,0),2,cv2.LINE_AA)

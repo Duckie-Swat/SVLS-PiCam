@@ -1,0 +1,11 @@
+[
+    {
+        "cameraId": "f5a5d695-eb56-4070-b262-76066b63bc46",
+        "lostVehicleRequestId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "latitude": 90,
+        "longitude": 180,
+        "location": "string",
+        "photo": "string",
+        "plateNumber": "string"
+    }
+]
