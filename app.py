@@ -7,7 +7,7 @@ import time
 import importlib.util
 from my_videostream import VideoStream
 from my_plate_recognition import PlateRecognition
-from my_util import save, get_current_gps
+from my_util import save, get_current_gps, convert_gps_to_address
 from datetime import datetime
 import json
 
@@ -140,18 +140,24 @@ def gen_frames():
                         lost_vehicle_list = json.loads(f.read())["items"]
                         for lv in lost_vehicle_list:
                             lv_plate_number = lv["plateNumber"]
+                            lv_request = lv["id"]
+
                             lv_plate_number = lv_plate_number.replace("-", "")
                             lv_plate_number = lv_plate_number.replace(".", "")
                             
                             if lv_plate_number == plate_number:
                                 print("detected")
-                                save(frame, fileName=f'{plate_number}.jpg')
+                                current_gps = get_current_gps()
+                                current_address = convert_gps_to_address(current_gps)
+                                with open(os.path.join(CWD_PATH, 'saved', f'{lv_plate_number}.txt'), 'w') as file:
+                                    file.write(json.dumps({
+                                        "current_gps": current_gps,
+                                        "current_address": current_address
+                                    }))
+                                save(frame, fileName=f'{plate_number}_{lv_request}.jpg')
                     except Exception as e:
-                        print(e)
+                        print(f'Exception {e}')
                     
-                
-                
-
         # Draw framerate in corner of frame
         cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,0),2,cv2.LINE_AA)
          # Calculate framerate
