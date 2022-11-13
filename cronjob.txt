@@ -1,0 +1,2 @@
+*/30 * * * * cd /home/pi/Code/SSD2 && python3 /home/pi/Code/SSD2/fetch_lost_vehicles_requests.py
+*/5 * * * * cd /home/pi/Code/SSD2 && python3 /home/pi/Code/SSD2/send_detected_results.py

@@ -1,4 +1,5 @@
 
+from datetime import datetime
 import requests
 import os
 import json
@@ -66,3 +67,5 @@ if len(request_payload) > 0:
     for file in list_image_remove:
         os.remove(file)
     print(f"Send a POST request to server with payload {request_payload}")
+    with open(os.path.join(WORK_DIR, 'send.log'), 'a') as f:
+        f.write(f'Sent a POST request to server with payload at {datetime.now()}\n')

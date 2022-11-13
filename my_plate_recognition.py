@@ -5,6 +5,7 @@ import os
 import numpy as np
 import pytesseract
 import string
+from tensorflow.lite.python.interpreter import Interpreter
 
 class PlateRecognition():
     def __init__(self) -> None:
@@ -12,9 +13,73 @@ class PlateRecognition():
         self.digit_w = 30 # Kich thuoc ki tu
         self.digit_h = 60 # Kich thuoc ki tu
         self.model_svm = cv2.ml.SVM_load(os.path.join(os.getcwd(), 'models', 'svm.xml'))
+        with open(os.path.join(os.getcwd(), 'models', 'plate_recognition_labelmap.txt'), 'r') as f:
+            self.labels = [line.strip() for line in f.readlines()]
+        
 
-    
-    def recognize(self, img) -> str:
+    def recognize_ssd(self, image, min_conf=0.5) -> str:
+        interpreter = Interpreter(model_path=os.path.join(os.getcwd(), 'models', 'mobilenetv2_model_plate_recognition_quant.tflite'))
+        interpreter.allocate_tensors()
+
+        # Get model details
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+        height = input_details[0]['shape'][1]
+        width = input_details[0]['shape'][2]
+        float_input = (input_details[0]['dtype'] == np.float32)
+        input_mean = 127.5
+        input_std = 127.5
+
+
+        outname = output_details[0]['name']
+
+        if ('StatefulPartitionedCall' in outname): # This is a TF2 model
+            boxes_idx, classes_idx, scores_idx = 1, 3, 0
+        else: # This is a TF1 model
+            boxes_idx, classes_idx, scores_idx = 0, 1, 2
+
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        imH, imW, _ = image.shape 
+        image_resized = cv2.resize(image_rgb, (width, height))
+        input_data = np.expand_dims(image_resized, axis=0)
+
+        if float_input:
+          input_data = (np.float32(input_data) - input_mean) / input_std
+        # Perform the actual detection by running the model with the image as input
+
+        interpreter.set_tensor(input_details[0]['index'],input_data)
+        interpreter.invoke()
+
+        # Retrieve detection results
+        boxes = interpreter.get_tensor(output_details[boxes_idx]['index'])[0] # Bounding box coordinates of detected objects
+        classes = interpreter.get_tensor(output_details[classes_idx]['index'])[0] # Class index of detected objects
+        scores = interpreter.get_tensor(output_details[scores_idx]['index'])[0] # Confidence of detected objects
+
+        num_list = []
+        for i in range(len(scores)):
+          if ((scores[i] > min_conf) and (scores[i] <= 1.0)):
+
+              # Get bounding box coordinates and draw box
+              # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
+              ymin = int(max(1,(boxes[i][0] * imH)))
+              xmin = int(max(1,(boxes[i][1] * imW)))
+              ymax = int(min(imH,(boxes[i][2] * imH)))
+              xmax = int(min(imW,(boxes[i][3] * imW)))
+              
+              cv2.rectangle(image, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
+
+              # Draw label
+              object_name = self.labels[int(classes[i])] # Look up object name from "labels" array using class index
+              label = '%s: %d%%' % (object_name, int(scores[i]*100)) # Example: 'person: 72%'
+              labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2) # Get font size
+              label_ymin = max(ymin, labelSize[1] + 10) # Make sure not to draw label too close to top of window
+              cv2.rectangle(image, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
+            #   plate_num += object_name
+              num_list.append([xmin, ymin, object_name])
+
+        return self.get_license_plate(num_list)
+
+    def recognize_svm(self, img) -> str:
          # Chuyen anh bien so ve gray
         img_gray = cv2.cvtColor( img, cv2.COLOR_BGR2GRAY)
         # Ap dung threshold de phan tach so va nen
@@ -56,9 +121,6 @@ class PlateRecognition():
         # print(f'Dectected: {plate_info}')
         return plate_info
 
-
-    
-
     # Ham sap xep contour tu trai sang phai
     def sort_contours(self, cnts):
         reverse = True
@@ -75,3 +137,29 @@ class PlateRecognition():
             if lp[i] in self.char_list:
                 newString += lp[i]
         return newString
+
+    def get_license_plate(self, num_list):
+        def min_Y(array_2d):
+            res = float('inf')
+            for a in array_2d:
+                if a[1] < res:
+                    res = a[1]
+            return res
+        min_y = min_Y(num_list)    
+        line1 = []
+        line2 = []
+        THRESH_HOLD = 100
+        for a in num_list:
+            if abs(a[1] - min_y) < THRESH_HOLD:
+                line1.append(a)
+            else:
+                line2.append(a)
+
+        line1 = sorted(line1, key=lambda e: e[0])
+        line2 = sorted(line2, key=lambda e: e[0])
+
+        if len(line2) == 0:  # if license plate has 1 line
+            license_plate = "".join([str(ele[2]) for ele in line1])
+        else:   # if license plate has 2 lines
+            license_plate = "".join([str(ele[2]) for ele in line1]) + "-" + "".join([str(ele[2]) for ele in line2])
+        return license_plate

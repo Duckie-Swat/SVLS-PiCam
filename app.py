@@ -10,7 +10,8 @@ from my_plate_recognition import PlateRecognition
 from my_util import save, get_current_gps, convert_gps_to_address
 from datetime import datetime
 import json
-
+import pytesseract
+from threading import Thread
 
 app=Flask(__name__)
 plateRecognition = PlateRecognition()
@@ -43,8 +44,32 @@ LOST_VEHICLE_LIST = os.path.join(CWD_PATH, 'saved', 'data.json')
 
 # Initialize video stream
 videostream = VideoStream(resolution=(imW,imH),framerate=30).start()
-print("Hi")
+print("Starting video capturing .....")
 time.sleep(1)
+
+def check_plate_number_belong_lost_vehicle(plate_number, frame):
+    with open(LOST_VEHICLE_LIST, 'r') as f:
+        try:
+            lost_vehicle_list = json.loads(f.read())["items"]
+            for lv in lost_vehicle_list:
+                lv_plate_number = lv["plateNumber"]
+                lv_request = lv["id"]
+
+                lv_plate_number = lv_plate_number.replace("-", "")
+                lv_plate_number = lv_plate_number.replace(".", "")
+                            
+                if lv_plate_number == plate_number:
+                    print("detected")
+                    current_gps = get_current_gps()
+                    current_address = convert_gps_to_address(current_gps)
+                    with open(os.path.join(CWD_PATH, 'saved', f'{lv_plate_number}.txt'), 'w') as file:
+                        file.write(json.dumps({
+                            "current_gps": current_gps,
+                            "current_address": current_address
+                        }))
+                        save(frame, fileName=f'{plate_number}_{lv_request}.jpg')
+        except Exception as e:
+            print(f'Exception {e}')
 
 
 def gen_frames():
@@ -127,36 +152,12 @@ def gen_frames():
                 # Plate recognition
 
                 cropped_image = frame[ymin:ymax, xmin:xmax]
-                plate_number = plateRecognition.recognize(cropped_image)
+                # plate_number = plateRecognition.recognize_svm(cropped_image)
+                plate_number = plateRecognition.recognize_ssd(cropped_image)
                 label = label.replace('{{plate_number}}', plate_number)
-
                 cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
+                Thread(target=check_plate_number_belong_lost_vehicle, args=(plate_number, frame, )).start()
                 
-
-                # loop all lost vehicles
-                
-                with open(LOST_VEHICLE_LIST, 'r') as f:
-                    try:
-                        lost_vehicle_list = json.loads(f.read())["items"]
-                        for lv in lost_vehicle_list:
-                            lv_plate_number = lv["plateNumber"]
-                            lv_request = lv["id"]
-
-                            lv_plate_number = lv_plate_number.replace("-", "")
-                            lv_plate_number = lv_plate_number.replace(".", "")
-                            
-                            if lv_plate_number == plate_number:
-                                print("detected")
-                                current_gps = get_current_gps()
-                                current_address = convert_gps_to_address(current_gps)
-                                with open(os.path.join(CWD_PATH, 'saved', f'{lv_plate_number}.txt'), 'w') as file:
-                                    file.write(json.dumps({
-                                        "current_gps": current_gps,
-                                        "current_address": current_address
-                                    }))
-                                save(frame, fileName=f'{plate_number}_{lv_request}.jpg')
-                    except Exception as e:
-                        print(f'Exception {e}')
                     
         # Draw framerate in corner of frame
         cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,0),2,cv2.LINE_AA)

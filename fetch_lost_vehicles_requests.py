@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 import os
 import json
@@ -11,14 +12,16 @@ BASE_URL = 'https://svls-api.duckieswat.com/api/v1'
 def fetch_lost_vehicles_requests(url, keyword, limit):
     print(f'Request to {url} with keyword {keyword}')
     response = requests.get(url=url, params={
-        keyword: keyword,
-        limit: limit
+        "keyword": keyword,
+        "limit": limit
     })
     print('received data from api')
     saveFile = os.path.join(WORK_DIR, 'saved', 'data.json')
     with open(saveFile, 'w') as file:
         file.write(json.dumps(response.json()))
         print('---------Done---------')
+    with open(os.path.join(WORK_DIR, 'fetch.log'), 'a') as f:
+        f.write(f'Fetch list from api at {datetime.now()}\n')
 
 location = convert_gps_to_address(get_current_gps())
 
