@@ -1,0 +1,1 @@
+{"current_gps": ["10.823", "106.6296"], "current_address": "Qu\u1eadn B\u00ecnh T\u00e2n"}

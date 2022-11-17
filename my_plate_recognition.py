@@ -15,10 +15,10 @@ class PlateRecognition():
         self.model_svm = cv2.ml.SVM_load(os.path.join(os.getcwd(), 'models', 'svm.xml'))
         with open(os.path.join(os.getcwd(), 'models', 'plate_recognition_labelmap.txt'), 'r') as f:
             self.labels = [line.strip() for line in f.readlines()]
-        
+        self.num_threads = 4
 
     def recognize_ssd(self, image, min_conf=0.5) -> str:
-        interpreter = Interpreter(model_path=os.path.join(os.getcwd(), 'models', 'mobilenetv2_model_plate_recognition_quant.tflite'))
+        interpreter = Interpreter(model_path=os.path.join(os.getcwd(), 'models', 'mobilenetv2_model_plate_recognition_quant.tflite'), num_threads=self.num_threads)
         interpreter.allocate_tensors()
 
         # Get model details
@@ -67,14 +67,13 @@ class PlateRecognition():
               xmax = int(min(imW,(boxes[i][3] * imW)))
               
               cv2.rectangle(image, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
-
               # Draw label
               object_name = self.labels[int(classes[i])] # Look up object name from "labels" array using class index
               label = '%s: %d%%' % (object_name, int(scores[i]*100)) # Example: 'person: 72%'
               labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2) # Get font size
               label_ymin = max(ymin, labelSize[1] + 10) # Make sure not to draw label too close to top of window
               cv2.rectangle(image, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
-            #   plate_num += object_name
+              cv2.putText(image, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
               num_list.append([xmin, ymin, object_name])
 
         return self.get_license_plate(num_list)
@@ -161,5 +160,5 @@ class PlateRecognition():
         if len(line2) == 0:  # if license plate has 1 line
             license_plate = "".join([str(ele[2]) for ele in line1])
         else:   # if license plate has 2 lines
-            license_plate = "".join([str(ele[2]) for ele in line1]) + "-" + "".join([str(ele[2]) for ele in line2])
+            license_plate = "".join([str(ele[2]) for ele in line1])  + "".join([str(ele[2]) for ele in line2])
         return license_plate

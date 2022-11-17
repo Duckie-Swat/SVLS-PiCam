@@ -1,1 +1,39 @@
-{"currentPage": 1, "totalItems": 4, "totalPages": 1, "items": [{"userId": "a5501d40-ff9f-4d44-bea6-3cf4571fc710", "plateNumber": "99H77060", "vehicleType": "xe m\u00e1y", "latitude": 10.823, "longitude": 106.6296, "location": "Qu\u1eadn T\u00e2n Ph\u00fa", "status": 0, "user": {"id": "a5501d40-ff9f-4d44-bea6-3cf4571fc710", "email": "customer@duckieswat.com", "firstName": "Nam", "lastName": "Le a", "dateOfBirth": "0001-01-01T00:00:00", "emailConfirmed": true, "phoneNumber": "0123456755", "createdAt": "2022-10-09T07:48:39.986377Z", "lastUpdatedAt": "2022-10-26T15:18:54.774516Z", "isDeleted": false, "createdBy": "00000000-0000-0000-0000-000000000000", "updatedBy": "00000000-0000-0000-0000-000000000000", "deletedBy": "00000000-0000-0000-0000-000000000000"}, "cameraDetectedResults": [], "id": "a88a59c3-03c7-412b-b514-b1d0a12183ab", "createdAt": "2022-11-10T16:24:33.222677Z", "lastUpdatedAt": "2022-11-10T16:24:33.222677Z", "isDeleted": false, "createdBy": "00000000-0000-0000-0000-000000000000", "updatedBy": "00000000-0000-0000-0000-000000000000", "deletedBy": "00000000-0000-0000-0000-000000000000"}, {"userId": "a5501d40-ff9f-4d44-bea6-3cf4571fc710", "plateNumber": "PUI8BES", "vehicleType": "\u00d4 t\u00f4", "latitude": 10.8728922, "longitude": 106.7333543, "location": "Qu\u1eadn T\u00e2n Ph\u00fa", "status": 0, "user": {"id": "a5501d40-ff9f-4d44-bea6-3cf4571fc710", "email": "customer@duckieswat.com", "firstName": "Nam", "lastName": "Le a", "dateOfBirth": "0001-01-01T00:00:00", "emailConfirmed": true, "phoneNumber": "0123456755", "createdAt": "2022-10-09T07:48:39.986377Z", "lastUpdatedAt": "2022-10-26T15:18:54.774516Z", "isDeleted": false, "createdBy": "00000000-0000-0000-0000-000000000000", "updatedBy": "00000000-0000-0000-0000-000000000000", "deletedBy": "00000000-0000-0000-0000-000000000000"}, "cameraDetectedResults": [], "id": "02236096-5ed2-4e0d-ae55-43e2b6342624", "createdAt": "2022-11-11T16:59:39.54302Z", "lastUpdatedAt": "2022-11-11T16:59:39.54302Z", "isDeleted": false, "createdBy": "00000000-0000-0000-0000-000000000000", "updatedBy": "00000000-0000-0000-0000-000000000000", "deletedBy": "00000000-0000-0000-0000-000000000000"}, {"userId": "a5501d40-ff9f-4d44-bea6-3cf4571fc710", "plateNumber": "15A22222", "vehicleType": "\u00d4 t\u00f4", "latitude": 10.8728939, "longitude": 106.7333591, "location": "Qu\u1eadn T\u00e2n Ph\u00fa", "status": 0, "user": {"id": "a5501d40-ff9f-4d44-bea6-3cf4571fc710", "email": "customer@duckieswat.com", "firstName": "Nam", "lastName": "Le a", "dateOfBirth": "0001-01-01T00:00:00", "emailConfirmed": true, "phoneNumber": "0123456755", "createdAt": "2022-10-09T07:48:39.986377Z", "lastUpdatedAt": "2022-10-26T15:18:54.774516Z", "isDeleted": false, "createdBy": "00000000-0000-0000-0000-000000000000", "updatedBy": "00000000-0000-0000-0000-000000000000", "deletedBy": "00000000-0000-0000-0000-000000000000"}, "cameraDetectedResults": [], "id": "291ec8b9-5aee-433c-aa36-1b8c652ee4e9", "createdAt": "2022-11-11T17:05:35.270293Z", "lastUpdatedAt": "2022-11-11T17:05:35.270293Z", "isDeleted": false, "createdBy": "00000000-0000-0000-0000-000000000000", "updatedBy": "00000000-0000-0000-0000-000000000000", "deletedBy": "00000000-0000-0000-0000-000000000000"}, {"userId": "a5501d40-ff9f-4d44-bea6-3cf4571fc710", "plateNumber": "29T82843", "vehicleType": "Xe m\u00e1y", "latitude": 10.8728101, "longitude": 106.733397, "location": "Qu\u1eadn T\u00e2n Ph\u00fa", "status": 0, "user": {"id": "a5501d40-ff9f-4d44-bea6-3cf4571fc710", "email": "customer@duckieswat.com", "firstName": "Nam", "lastName": "Le a", "dateOfBirth": "0001-01-01T00:00:00", "emailConfirmed": true, "phoneNumber": "0123456755", "createdAt": "2022-10-09T07:48:39.986377Z", "lastUpdatedAt": "2022-10-26T15:18:54.774516Z", "isDeleted": false, "createdBy": "00000000-0000-0000-0000-000000000000", "updatedBy": "00000000-0000-0000-0000-000000000000", "deletedBy": "00000000-0000-0000-0000-000000000000"}, "cameraDetectedResults": [], "id": "a12480ca-e61a-44d0-8016-11d913748aeb", "createdAt": "2022-11-11T17:08:35.313993Z", "lastUpdatedAt": "2022-11-11T17:08:35.313993Z", "isDeleted": false, "createdBy": "00000000-0000-0000-0000-000000000000", "updatedBy": "00000000-0000-0000-0000-000000000000", "deletedBy": "00000000-0000-0000-0000-000000000000"}]}
+{
+    "currentPage": 1,
+    "totalItems": 1,
+    "totalPages": 1,
+    "items": [
+        {
+            "userId": "a5501d40-ff9f-4d44-bea6-3cf4571fc710",
+            "plateNumber": "99H77060",
+            "vehicleType": "Xe m\u00e1y",
+            "latitude": 10.8728822,
+            "longitude": 106.7333525,
+            "location": "Qu\u1eadn B\u00ecnh T\u00e2n",
+            "status": 0,
+            "user": {
+                "id": "a5501d40-ff9f-4d44-bea6-3cf4571fc710",
+                "email": "customer@duckieswat.com",
+                "firstName": "Nam",
+                "lastName": "Le a",
+                "dateOfBirth": "0001-01-01T00:00:00",
+                "emailConfirmed": true,
+                "phoneNumber": "0123456755",
+                "createdAt": "2022-10-09T07:48:39.986377Z",
+                "lastUpdatedAt": "2022-10-26T15:18:54.774516Z",
+                "isDeleted": false,
+                "createdBy": "00000000-0000-0000-0000-000000000000",
+                "updatedBy": "00000000-0000-0000-0000-000000000000",
+                "deletedBy": "00000000-0000-0000-0000-000000000000"
+            },
+            "cameraDetectedResults": [],
+            "id": "83841cf5-8229-4367-bece-ad8eae428588",
+            "createdAt": "2022-11-14T13:50:49.312816Z",
+            "lastUpdatedAt": "2022-11-14T13:50:49.312817Z",
+            "isDeleted": false,
+            "createdBy": "00000000-0000-0000-0000-000000000000",
+            "updatedBy": "00000000-0000-0000-0000-000000000000",
+            "deletedBy": "00000000-0000-0000-0000-000000000000"
+        }
+    ]
+}

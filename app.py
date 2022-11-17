@@ -41,9 +41,12 @@ with open(PATH_TO_LABELS, 'r') as f:
 
 LOST_VEHICLE_LIST = os.path.join(CWD_PATH, 'saved', 'data.json')
 
+# Test video
+# SRC = os.path.join(CWD_PATH, 'samples', 'IMG_0091.MOV')
+SRC = 0
 
 # Initialize video stream
-videostream = VideoStream(resolution=(imW,imH),framerate=30).start()
+videostream = VideoStream(resolution=(imW,imH),framerate=36, source=SRC)
 print("Starting video capturing .....")
 time.sleep(1)
 
@@ -73,7 +76,7 @@ def check_plate_number_belong_lost_vehicle(plate_number, frame):
 
 
 def gen_frames():
-    interpreter = Interpreter(model_path=PATH_TO_CKPT)
+    interpreter = Interpreter(model_path=PATH_TO_CKPT, num_threads=4)
     interpreter.allocate_tensors()
 
     # Initialize frame rate calculation
@@ -92,7 +95,6 @@ def gen_frames():
     # because outputs are ordered differently for TF2 and TF1 models
     outname = output_details[0]['name']
 
-    
     if ('StatefulPartitionedCall' in outname): # This is a TF2 model
         boxes_idx, classes_idx, scores_idx = 1, 3, 0
     else: # This is a TF1 model
@@ -101,10 +103,12 @@ def gen_frames():
     while True:
         # Start timer (for calculating frame rate)
         t1 = cv2.getTickCount()
-
         # Grab frame from video stream
-        frame1 = videostream.read()
+        if videostream.stopped:
+            videostream.stop()
+            break
 
+        frame1 = videostream.frame
         # Acquire frame and resize to expected shape [1xHxWx3]
         frame = frame1.copy()
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -158,7 +162,7 @@ def gen_frames():
                 cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
                 Thread(target=check_plate_number_belong_lost_vehicle, args=(plate_number, frame, )).start()
                 
-                    
+    
         # Draw framerate in corner of frame
         cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,0),2,cv2.LINE_AA)
          # Calculate framerate
@@ -169,7 +173,7 @@ def gen_frames():
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
+    
 @app.route('/')
 def index():
     return render_template('index.html')

@@ -13,9 +13,11 @@ def save(img, currentDir=os.getcwd(),fileName=f'{datetime.timestamp(datetime.now
     print(f'saved {fileName} to {savedDir}')
 
 def get_current_gps():
-    return geocoder.ip('me').latlng
+    # return geocoder.ip('me').latlng
+    return ['10.823', '106.6296']
 
 def convert_gps_to_address(gps):
-    gps_str = ", ".join(map(lambda p: str(p), gps))
-    address = geolocator.geocode(geolocator.reverse(gps_str), addressdetails=True)
-    return address.raw['address']['city_district']
+    # gps_str = ", ".join(map(lambda p: str(p), gps))
+    # address = geolocator.geocode(geolocator.reverse(gps_str), addressdetails=True)
+    # return address.raw['address']['city_district']
+    return "Quận Bình Tân"
