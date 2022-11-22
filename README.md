@@ -6,3 +6,7 @@ python3 TFLite_detection_video.py --modeldir=models --graph=detect_quant_v2.tfli
 
 # Sample scripts for detect and recognition a video
 python3 TFLite_detection_video_and_recognition.py --modeldir=models --graph=detect_quant_v2.tflite --labels=labelmap.txt --video=samples/IMG_0084.MOV --outputdir=output_videos_detection_and_recognition --threshold 0.5
+
+# Results
+## Result with SSD MobileNet V2 for detection and OCR
+![frame100](https://user-images.githubusercontent.com/79694464/203388398-b3f106d8-d313-4fa4-be6e-b284c209a301.jpg)
