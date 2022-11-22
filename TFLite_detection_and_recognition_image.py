@@ -196,27 +196,26 @@ for image_path in images:
                 # label = label.replace('{{plate_number}}', object_name)
             label = label.replace('{{plate_number_percentagle}}', f'%.2f' % (scores[i]*100) )
 
-            labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2) # Get font size
-            label_ymin = max(ymin, labelSize[1] + 10) # Make sure not to draw label too close to top of window
-            cv2.rectangle(image, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
-            
             # Recognition
             cropped_image = image[ymin:ymax, xmin:xmax]
             # plate_number = plateRecognition.recognize_svm(cropped_image)
-            # save(cropped_image)
             plate_number = plateRecognition.recognize_ssd(cropped_image)
-
             detections.append([plate_number, scores[i], xmin, ymin, xmax, ymax])
             label = label.replace('{{plate_number}}',  plate_number)
+
+            labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2) # Get font size
+            label_ymin = max(ymin, labelSize[1] + 10) # Make sure not to draw label too close to top of window
+            cv2.rectangle(image, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
             cv2.putText(image, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
             is_save_ok = True
 
     # Save the labeled image to results folder if desired
     if save_results and is_save_ok:
-
+        
         # Get filenames and paths
         image_fn = os.path.basename(image_path)
         image_savepath = os.path.join(CWD_PATH,RESULTS_DIR,image_fn)
+        print(f'Saved {image_savepath}')
         
         base_fn, ext = os.path.splitext(image_fn)
         txt_result_fn = base_fn +'.txt'

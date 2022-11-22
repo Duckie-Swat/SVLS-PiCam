@@ -74,7 +74,8 @@ class PlateRecognition():
               label_ymin = max(ymin, labelSize[1] + 10) # Make sure not to draw label too close to top of window
               cv2.rectangle(image, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
               cv2.putText(image, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
-              num_list.append([xmin, ymin, object_name])
+              length = ymax - ymin
+              num_list.append([xmin, ymin, object_name, length])
 
         return self.get_license_plate(num_list)
 
@@ -144,10 +145,15 @@ class PlateRecognition():
                 if a[1] < res:
                     res = a[1]
             return res
+        def avg_length(array_2d):
+            s = 0
+            for a in array_2d:
+                s += a[3]
+            return s / len(array_2d)
         min_y = min_Y(num_list)    
         line1 = []
         line2 = []
-        THRESH_HOLD = 100
+        THRESH_HOLD = 0.6 * avg_length(num_list)
         for a in num_list:
             if abs(a[1] - min_y) < THRESH_HOLD:
                 line1.append(a)
