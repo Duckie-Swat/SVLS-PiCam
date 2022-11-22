@@ -147,9 +147,10 @@ class PlateRecognition():
             return res
         def avg_length(array_2d):
             s = 0
+            length_array_2d = len(array_2d)
             for a in array_2d:
                 s += a[3]
-            return s / len(array_2d)
+            return s / length_array_2d if length_array_2d > 0 else 0
         min_y = min_Y(num_list)    
         line1 = []
         line2 = []
