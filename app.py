@@ -29,9 +29,6 @@ LABELMAP_NAME = 'labelmap.txt'
 # Path to .tflite file, which contains the model that is used for object detection
 PATH_TO_CKPT = os.path.join(CWD_PATH,MODEL_NAME,GRAPH_NAME)
 
-# Path to .tflite file, which contains the model that is used for classification
-PATH_TO_CKPT_CLS = os.path.join(CWD_PATH,MODEL_NAME,'mobilenetv2_model_classification.tflite')
-
 # Path to label map file
 PATH_TO_LABELS = os.path.join(CWD_PATH,MODEL_NAME,LABELMAP_NAME)
 
@@ -161,14 +158,13 @@ def gen_frames():
                 label = label.replace('{{plate_number}}', plate_number)
                 cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
                 Thread(target=check_plate_number_belong_lost_vehicle, args=(plate_number, frame, )).start()
-                
-    
-        # Draw framerate in corner of frame
-        cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,0),2,cv2.LINE_AA)
+            
          # Calculate framerate
         t2 = cv2.getTickCount()
         time1 = (t2-t1)/freq
         frame_rate_calc= 1/time1
+        # Draw framerate in corner of frame
+        cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,0),2,cv2.LINE_AA)
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
