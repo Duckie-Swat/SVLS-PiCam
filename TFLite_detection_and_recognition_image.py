@@ -1,5 +1,6 @@
 import os
 import argparse
+import time
 import cv2
 import numpy as np
 import sys
@@ -24,6 +25,8 @@ parser.add_argument('--imagedir', help='Name of the folder containing images to 
                     default=None)
 parser.add_argument('--save_results', help='Save labeled images and annotation data to a results folder',
                     action='store_true')
+parser.add_argument('--results_dir', help='Save labeled images and annotation data to a results folder',
+                    action='store_true')
 parser.add_argument('--noshow_results', help='Don\'t show result images (only use this if --save_results is enabled)',
                     action='store_false')
 parser.add_argument('--edgetpu', help='Use Coral Edge TPU Accelerator to speed up detection',
@@ -44,7 +47,7 @@ use_TPU = args.edgetpu
 
 save_results = args.save_results # Defaults to False
 show_results = args.noshow_results # Defaults to True
-
+results_dir = args.results_dir
 num_threads = args.num_threads
 
 IM_NAME = args.image
@@ -87,7 +90,7 @@ if IM_DIR:
     PATH_TO_IMAGES = os.path.join(CWD_PATH,IM_DIR)
     images = glob.glob(PATH_TO_IMAGES + '/*.jpg') + glob.glob(PATH_TO_IMAGES + '/*.JPG') + glob.glob(PATH_TO_IMAGES + '/*.png') + glob.glob(PATH_TO_IMAGES + '/*.bmp')
     if save_results:
-        RESULTS_DIR = IM_DIR + '_results'
+        RESULTS_DIR = results_dir
 
 elif IM_NAME:
     PATH_TO_IMAGES = os.path.join(CWD_PATH,IM_NAME)
@@ -151,7 +154,7 @@ else: # This is a TF1 model
 
 # Loop over every image and perform detection
 for image_path in images:
-
+    s = time.time()
     # Load image and resize to expected shape [1xHxWx3]
     image = cv2.imread(image_path)
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -208,6 +211,7 @@ for image_path in images:
             cv2.rectangle(image, (xmin, label_ymin-labelSize[1]-10), (xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
             cv2.putText(image, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
             is_save_ok = True
+    print("Recognition time of %s is %.2f seconds ---" % (os.path.basename(image_path), time.time() - s))
 
     # Save the labeled image to results folder if desired
     if save_results and is_save_ok:
