@@ -118,7 +118,7 @@ if __name__ == '__main__':
 	parser.add_argument('--save_results', help='Save labeled images and annotation data to a results folder',
                     action='store_true')
 	parser.add_argument('--results_dir', help='Save labeled images and annotation data to a results folder',
-                    action='store_true')
+                    default=None)
 	parser.add_argument('--classesFile', default='coco.names', help="Path to your classesFile.")
 	args = parser.parse_args()
 

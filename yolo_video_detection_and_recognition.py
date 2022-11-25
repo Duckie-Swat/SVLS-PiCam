@@ -116,7 +116,7 @@ if __name__ == '__main__':
     with open(classesFile, 'rt') as f:
         classes = f.read().rstrip('\n').split('\n')
     freq = cv2.getTickFrequency()
-    while cap.isOpened() :
+    while True :
 
         # get frame from the video
         ret, frame = cap.read()

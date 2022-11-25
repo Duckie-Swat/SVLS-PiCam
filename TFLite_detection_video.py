@@ -2,16 +2,12 @@ import os
 import argparse
 import cv2
 import numpy as np
-import sys
 import importlib.util
-
-
 
 # Define and parse input arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--modeldir', help='Folder the .tflite file is located in',
                     required=True)
-                    
 parser.add_argument('--graph', help='Name of the .tflite file, if different than detect.tflite',
                     default='detect.tflite')
 parser.add_argument('--labels', help='Name of the labelmap file, if different than labelmap.txt',
@@ -23,7 +19,6 @@ parser.add_argument('--video', help='Name of the video file',
 parser.add_argument('--edgetpu', help='Use Coral Edge TPU Accelerator to speed up detection',
                     action='store_true')
 parser.add_argument('--num_threads', help='Use threading', default=4)
-
 parser.add_argument('--outputdir', help='Folder to export video', required=True)
 
 args = parser.parse_args()
@@ -124,8 +119,8 @@ freq = cv2.getTickFrequency()
 
 num_frame = 0
 sum_fps = 0
-while(video.isOpened()):
-
+while True:
+    
     # Acquire frame and resize to expected shape [1xHxWx3]
     ret, frame = video.read()
     t1 = cv2.getTickCount()
@@ -181,6 +176,6 @@ while(video.isOpened()):
     vid_writer.write(frame)
 
 # Clean up
-print('AVG FPS: {0:.2f}'.format(sum_fps / num_frame))
+# print('AVG FPS: {0:.2f}'.format(sum_fps / num_frame))
 video.release()
 
