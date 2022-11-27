@@ -61,3 +61,8 @@ python yolov5/detect_and_recognition.py --weights yolov5/yolov5_best-int8.tflite
 # Results
 ## Result with SSD MobileNet V2 for detection and OCR
 ![frame100](https://user-images.githubusercontent.com/79694464/203388398-b3f106d8-d313-4fa4-be6e-b284c209a301.jpg)
+
+## Result with Yolov5 for detection and SSD SSD MobileNet V2 OCR
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/79694464/204141196-1bf5866a-e718-443e-97b7-cff6d898c172.gif)
+
+![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/79694464/204142193-25122acc-434f-4fc3-9457-e14350419643.gif)
