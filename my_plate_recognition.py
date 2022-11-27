@@ -3,7 +3,6 @@ from datetime import datetime
 import cv2
 import os
 import numpy as np
-import pytesseract
 import string
 from tensorflow.lite.python.interpreter import Interpreter
 import math

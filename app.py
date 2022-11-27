@@ -10,7 +10,6 @@ from my_plate_recognition import PlateRecognition
 from my_util import save, get_current_gps, convert_gps_to_address
 from datetime import datetime
 import json
-import pytesseract
 from threading import Thread
 
 app=Flask(__name__)

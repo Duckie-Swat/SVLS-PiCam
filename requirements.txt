@@ -1,5 +1,3 @@
 flask
 opencv-python
 tensorflow
-pytesseract
-tflite_runtime
