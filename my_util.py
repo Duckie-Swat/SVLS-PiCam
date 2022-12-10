@@ -5,6 +5,7 @@ import geocoder
 from geopy.geocoders import Nominatim
 import numpy as np
 import math
+import json
 
 geolocator = Nominatim(user_agent="geoapiExercises")
 
@@ -82,3 +83,26 @@ def deskew(src_img, change_cons, center_thres):
     else:
         return rotate_image(src_img, compute_skew(src_img, center_thres))
 
+def check_plate_number_belong_lost_vehicle(plate_number, frame, save_path):
+    with open(save_path, 'r') as f:
+        try:
+            lost_vehicle_list = json.loads(f.read())["items"]
+            for lv in lost_vehicle_list:
+                lv_plate_number = lv["plateNumber"]
+                lv_request = lv["id"]
+
+                lv_plate_number = lv_plate_number.replace("-", "")
+                lv_plate_number = lv_plate_number.replace(".", "")
+                            
+                if lv_plate_number == plate_number:
+                    print("detected")
+                    current_gps = get_current_gps()
+                    current_address = convert_gps_to_address(current_gps)
+                    with open(os.path.join(os.getcwd(), 'saved', f'{lv_plate_number}.txt'), 'w') as file:
+                        file.write(json.dumps({
+                            "current_gps": current_gps,
+                            "current_address": current_address
+                        }))
+                        save(frame, fileName=f'{plate_number}_{lv_request}.jpg')
+        except Exception as e:
+            print(f'Exception {e}')

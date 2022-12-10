@@ -7,9 +7,7 @@ import time
 import importlib.util
 from my_videostream import VideoStream
 from my_plate_recognition import PlateRecognition
-from my_util import save, get_current_gps, convert_gps_to_address
-from datetime import datetime
-import json
+from my_util import check_plate_number_belong_lost_vehicle
 from threading import Thread
 
 app=Flask(__name__)
@@ -35,7 +33,7 @@ PATH_TO_LABELS = os.path.join(CWD_PATH,MODEL_NAME,LABELMAP_NAME)
 with open(PATH_TO_LABELS, 'r') as f:
     labels = [line.strip() for line in f.readlines()]
 
-LOST_VEHICLE_LIST = os.path.join(CWD_PATH, 'saved', 'data.json')
+LOST_VEHICLE_LIST_PATH = os.path.join(CWD_PATH, 'saved', 'data.json')
 
 # Test video
 # SRC = os.path.join(CWD_PATH, 'samples', 'IMG_0091.MOV')
@@ -45,31 +43,6 @@ SRC = 0
 videostream = VideoStream(resolution=(imW,imH),framerate=36, source=SRC)
 print("Starting video capturing .....")
 time.sleep(1)
-
-def check_plate_number_belong_lost_vehicle(plate_number, frame):
-    with open(LOST_VEHICLE_LIST, 'r') as f:
-        try:
-            lost_vehicle_list = json.loads(f.read())["items"]
-            for lv in lost_vehicle_list:
-                lv_plate_number = lv["plateNumber"]
-                lv_request = lv["id"]
-
-                lv_plate_number = lv_plate_number.replace("-", "")
-                lv_plate_number = lv_plate_number.replace(".", "")
-                            
-                if lv_plate_number == plate_number:
-                    print("detected")
-                    current_gps = get_current_gps()
-                    current_address = convert_gps_to_address(current_gps)
-                    with open(os.path.join(CWD_PATH, 'saved', f'{lv_plate_number}.txt'), 'w') as file:
-                        file.write(json.dumps({
-                            "current_gps": current_gps,
-                            "current_address": current_address
-                        }))
-                        save(frame, fileName=f'{plate_number}_{lv_request}.jpg')
-        except Exception as e:
-            print(f'Exception {e}')
-
 
 def gen_frames():
     interpreter = Interpreter(model_path=PATH_TO_CKPT, num_threads=4)
@@ -156,7 +129,7 @@ def gen_frames():
                 plate_number = plateRecognition.recognize_ssd(cropped_image)
                 label = label.replace('{{plate_number}}', plate_number)
                 cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
-                Thread(target=check_plate_number_belong_lost_vehicle, args=(plate_number, frame, )).start()
+                Thread(target=check_plate_number_belong_lost_vehicle, args=(plate_number, frame, LOST_VEHICLE_LIST_PATH, )).start()
             
          # Calculate framerate
         t2 = cv2.getTickCount()
