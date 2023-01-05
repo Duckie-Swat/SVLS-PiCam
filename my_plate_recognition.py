@@ -77,7 +77,7 @@ class PlateRecognition():
               length = ymax - ymin
               num_list.append([xmin, ymin, object_name, length])
 
-        return self.get_license_plate(num_list)
+        return PlateRecognition.get_license_plate(num_list)
 
     def recognize_svm(self, img) -> str:
          # Chuyen anh bien so ve gray
@@ -138,7 +138,8 @@ class PlateRecognition():
                 newString += lp[i]
         return newString
 
-    def get_license_plate(self, num_list):
+    @staticmethod
+    def get_license_plate(num_list):
         def min_Y(array_2d):
             res = float('inf')
             for a in array_2d:
@@ -168,4 +169,5 @@ class PlateRecognition():
             license_plate = "".join([str(ele[2]) for ele in line1])
         else:   # if license plate has 2 lines
             license_plate = "".join([str(ele[2]) for ele in line1])  + "".join([str(ele[2]) for ele in line2])
-        return license_plate
+        print(license_plate)
+        return license_plate if len(license_plate) > 7 else None

@@ -58,6 +58,10 @@ python yolov5/detect_and_recognition.py --weights yolov5/yolov5_best-int8.tflite
 ```
 python yolov5/detect_and_recognition.py --weights yolov5/yolov5_best-int8.tflite --data yolov5/custom_data.yaml --source samples/videos/IMG_0086.MOV --project Results/Yolov5/videos/OCR
 ```
+## Detect and recogntize from webcam with YOLOv5
+```
+python yolov5/detect_and_recognition.py --weights yolov5/yolov5_best-int8.tflite --data yolov5/custom_data.yaml --source 0 --nosave --recog_type yolov5
+```
 # Results
 ## Result with SSD MobileNet V2 for detection and OCR
 ![frame100](https://user-images.githubusercontent.com/79694464/203388398-b3f106d8-d313-4fa4-be6e-b284c209a301.jpg)
